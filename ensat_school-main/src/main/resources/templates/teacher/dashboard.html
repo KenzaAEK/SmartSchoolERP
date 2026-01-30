@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<body>
+<div layout:fragment="content">
+
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h3><i class="fas fa-chalkboard-teacher me-2"></i> My Assigned Subjects</h3>
+  </div>
+
+  <!-- Si la liste est vide -->
+  <div th:if="${subjects.empty}" class="alert alert-info shadow-sm">
+    <i class="fas fa-info-circle me-2"></i> No subjects assigned to you yet. Please contact the administrator.
+  </div>
+
+  <div class="row">
+    <!-- Boucle sur les matières -->
+    <div class="col-md-4" th:each="sub : ${subjects}">
+      <div class="card shadow-sm mb-4 h-100 border-start border-4 border-primary">
+        <div class="card-body">
+
+          <!-- Titre Matière -->
+          <h5 class="card-title text-primary fw-bold" th:text="${sub.name}">Java Frameworks</h5>
+
+          <!-- Info Classe -->
+          <p class="card-text text-muted mb-4">
+            Classroom: <span class="badge bg-dark" th:text="${sub.classroom.name}">L3 INFO</span>
+            <br>
+            <small>Coeff: <span th:text="${sub.coefficient}">2</span></small>
+          </p>
+
+          <!-- Boutons d'actions -->
+          <div class="d-grid gap-2">
+            <!-- 1. Gestion des Notes (Existant) -->
+            <a th:href="@{/teacher/subject/{id}(id=${sub.id})}" class="btn btn-outline-primary">
+              <i class="fas fa-marker me-2"></i> Manage Grades
+            </a>
+
+            <!-- 2. Gestion des Absences (Nouveau) -->
+            <a th:href="@{/teacher/attendance/{id}(id=${sub.id})}" class="btn btn-outline-warning">
+              <i class="fas fa-clipboard-check me-2"></i> Take Attendance
+            </a>
+
+            <!-- 3. Liste de Classe PDF (Bonus Phase 8) -->
+            <a th:href="@{/teacher/classlist/download/{id}(id=${sub.id})}" class="btn btn-sm btn-link text-secondary text-decoration-none">
+              <i class="fas fa-file-pdf me-1"></i> Download Class List
+            </a>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<body>
+<div layout:fragment="content">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h3>Attendance: <span class="text-primary" th:text="${subject.name}">Subject</span></h3>
+        <a th:href="@{/teacher/dashboard}" class="btn btn-secondary">Back</a>
+    </div>
+
+    <!-- Sélecteur de date -->
+    <div class="card shadow-sm mb-4 p-3 bg-light">
+        <form th:action="@{/teacher/attendance/{id}(id=${subject.id})}" method="get" class="row g-3 align-items-center">
+            <div class="col-auto">
+                <label class="col-form-label fw-bold">Select Date:</label>
+            </div>
+            <div class="col-auto">
+                <input type="date" name="date" class="form-control" th:value="${currentDate}" required>
+            </div>
+            <div class="col-auto">
+                <button type="submit" class="btn btn-primary">Load Sheet</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Formulaire de saisie -->
+    <div class="card shadow">
+        <form th:action="@{/teacher/attendance/save}" method="post" th:object="${wrapper}">
+            <input type="hidden" th:field="*{subjectId}">
+            <input type="hidden" th:field="*{date}">
+
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-dark">
+                <tr>
+                    <th>Student Name</th>
+                    <th class="text-center">Status</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="st, itemStat : *{students}">
+                    <input type="hidden" th:field="*{students[__${itemStat.index}__].studentId}">
+
+                    <td class="fw-bold" th:text="${st.studentName}">Doe John</td>
+
+                    <td class="text-center">
+                        <div class="btn-group" role="group">
+                            <!-- PRESENT -->
+                            <input type="radio" class="btn-check"
+                                   th:name="|students[${itemStat.index}].status|"
+                                   th:id="|btn-pres-${itemStat.index}|"
+                                   value="PRESENT"
+                                   th:checked="${st.status.name() == 'PRESENT'}" autocomplete="off">
+                            <label class="btn btn-outline-success" th:for="|btn-pres-${itemStat.index}|">Present</label>
+
+                            <!-- ABSENT -->
+                            <input type="radio" class="btn-check"
+                                   th:name="|students[${itemStat.index}].status|"
+                                   th:id="|btn-abs-${itemStat.index}|"
+                                   value="ABSENT"
+                                   th:checked="${st.status.name() == 'ABSENT'}" autocomplete="off">
+                            <label class="btn btn-outline-danger" th:for="|btn-abs-${itemStat.index}|">Absent</label>
+
+                            <!-- LATE -->
+                            <input type="radio" class="btn-check"
+                                   th:name="|students[${itemStat.index}].status|"
+                                   th:id="|btn-late-${itemStat.index}|"
+                                   value="LATE"
+                                   th:checked="${st.status.name() == 'LATE'}" autocomplete="off">
+                            <label class="btn btn-outline-warning" th:for="|btn-late-${itemStat.index}|">Late</label>
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+
+            <div class="card-footer text-end">
+                <button type="submit" class="btn btn-success btn-lg">
+                    <i class="fas fa-save me-2"></i> Save Attendance
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+</body>
+</html>

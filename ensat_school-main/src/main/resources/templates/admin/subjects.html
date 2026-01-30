@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<body>
+<div layout:fragment="content">
+    <h3>Subject Allocation (Modules)</h3>
+    <p class="text-muted">Define subjects for classes and assign teachers.</p>
+
+    <div class="row">
+        <!-- FORM -->
+        <div class="col-md-4">
+            <div class="card shadow">
+                <div class="card-body">
+                    <h5 class="card-title">Add Subject</h5>
+                    <form th:action="@{/admin/academic/subjects/save}" method="post" th:object="${newSubject}">
+                        <div class="mb-3">
+                            <label>Subject Name</label>
+                            <input type="text" th:field="*{name}" class="form-control" placeholder="e.g. Java Basics" required>
+                        </div>
+                        <div class="mb-3">
+                            <label>Coefficient</label>
+                            <input type="number" th:field="*{coefficient}" class="form-control" value="1" min="1">
+                        </div>
+                        <div class="mb-3">
+                            <label>Target Class</label>
+                            <select name="classroomId" class="form-select">
+                                <option th:each="c : ${classrooms}" th:value="${c.id}" th:text="${c.name}"></option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label>Assigned Teacher</label>
+                            <select name="teacherId" class="form-select">
+                                <option th:each="t : ${teachers}" th:value="${t.id}" th:text="${t.firstName + ' ' + t.lastName}"></option>
+                            </select>
+                        </div>
+                        <button class="btn btn-primary w-100">Create & Assign</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- LIST -->
+        <div class="col-md-8">
+            <div class="card shadow">
+                <table class="table table-striped mb-0">
+                    <thead>
+                    <tr>
+                        <th>Subject</th>
+                        <th>Coeff</th>
+                        <th>Class</th>
+                        <th>Teacher</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="sub : ${subjects}">
+                        <td class="fw-bold" th:text="${sub.name}"></td>
+                        <td th:text="${sub.coefficient}"></td>
+                        <td><span class="badge bg-secondary" th:text="${sub.classroom.name}"></span></td>
+                        <td>
+                            <i class="fas fa-chalkboard-teacher text-success"></i>
+                            <span th:text="${sub.teacher.firstName + ' ' + sub.teacher.lastName}"></span>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

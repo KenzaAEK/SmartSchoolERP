@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<body>
+<div layout:fragment="content">
+    <div class="d-flex justify-content-between mb-3">
+        <h3>Student Enrollment</h3>
+        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#studentModal">
+            <i class="fas fa-user-plus"></i> Register Student
+        </button>
+    </div>
+
+    <table class="table table-bordered bg-white shadow-sm">
+        <thead class="table-light">
+        <tr>
+            <th>ID</th>
+            <th>Full Name</th>
+            <th>Username</th>
+            <th>Assigned Class</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="s : ${students}">
+            <td th:text="${s.studentIdNumber}"></td>
+            <td>
+                <span th:text="${s.lastName.toUpperCase()}"></span>
+                <span th:text="${s.firstName}"></span>
+            </td>
+            <td th:text="${s.username}"></td>
+            <td>
+                    <span class="badge bg-primary"
+                          th:text="${s.classroom != null ? s.classroom.name : 'Unassigned'}"></span>
+            </td>
+            <td>
+                <a th:href="@{/admin/academic/students/details/{id}(id=${s.id})}" class="btn btn-sm btn-outline-secondary">
+                    <i class="fas fa-eye"></i> Details
+                </a>
+                <!-- Bouton Edit -->
+                <a th:href="@{/admin/academic/students/edit/{id}(id=${s.id})}" class="btn btn-sm btn-outline-primary">
+                    <i class="fas fa-edit"></i>
+                </a>
+                <!-- Bouton Delete -->
+                <a th:href="@{/admin/academic/students/delete/{id}(id=${s.id})}" class="btn btn-sm btn-outline-danger"
+                   onclick="return confirm('Attention: Cela supprimera aussi ses notes et absences !')">
+                    <i class="fas fa-trash"></i>
+                </a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <!-- MODAL -->
+    <div class="modal fade" id="studentModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <form th:action="@{/admin/academic/students/save}" method="post" th:object="${newStudent}" class="modal-content">
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title">New Student Registration</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label>First Name</label>
+                            <input type="text" th:field="*{firstName}" class="form-control" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label>Last Name</label>
+                            <input type="text" th:field="*{lastName}" class="form-control" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label>Username (Login)</label>
+                            <input type="text" th:field="*{username}" class="form-control" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label>Student ID (CNE)</label>
+                            <input type="text" th:field="*{studentIdNumber}" class="form-control" required>
+                        </div>
+                        <div class="col-12">
+                            <label>Assign to Class</label>
+                            <select name="classroomId" class="form-select" required>
+                                <option th:each="c : ${classrooms}" th:value="${c.id}" th:text="${c.name}"></option>
+                            </select>
+                        </div>
+                        <div class="alert alert-info mt-2 col-12">
+                            Default password is set to: <strong>1234</strong>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-success">Register</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+</html>

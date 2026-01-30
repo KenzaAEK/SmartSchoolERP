@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <title>Erreur</title>
+</head>
+<body>
+<div layout:fragment="content">
+
+    <div class="container d-flex flex-column align-items-center justify-content-center" style="min-height: 60vh;">
+
+        <!-- Carte d'erreur -->
+        <div class="card shadow-lg border-0" style="max-width: 600px; width: 100%;">
+            <div class="card-header bg-danger text-white text-center py-3">
+                <h4 class="mb-0"><i class="fas fa-exclamation-triangle me-2"></i> <span th:text="${errorTitle}">Erreur</span></h4>
+            </div>
+
+            <div class="card-body p-5 text-center">
+                <!-- Illustration optionnelle (FontAwesome) -->
+                <div class="text-danger mb-4">
+                    <i class="fas fa-bug fa-4x opacity-50"></i>
+                </div>
+
+                <h5 class="card-title text-dark mb-3">Oups ! Quelque chose s'est mal passé.</h5>
+
+                <!-- Le message spécifique venant du Java -->
+                <p class="card-text text-muted fs-5" th:text="${errorMessage}">
+                    Description de l'erreur...
+                </p>
+
+                <!-- Détails techniques (optionnel) -->
+                <div th:if="${technicalDetails}" class="alert alert-light border mt-4 text-start small">
+                    <strong>Technical Info:</strong> <span th:text="${technicalDetails}"></span>
+                </div>
+
+                <div class="d-grid gap-2 mt-5">
+                    <a href="javascript:history.back()" class="btn btn-outline-secondary">
+                        <i class="fas fa-arrow-left me-2"></i> Retour
+                    </a>
+                    <a th:href="@{/}" class="btn btn-danger">
+                        <i class="fas fa-home me-2"></i> Retour au Dashboard
+                    </a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+</body>
+</html>

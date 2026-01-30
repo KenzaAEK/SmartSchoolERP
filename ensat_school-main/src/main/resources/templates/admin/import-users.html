@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<body>
+<div layout:fragment="content">
+    <h3><i class="fas fa-file-upload me-2"></i> Mass Import Users</h3>
+
+    <!-- Rapport de Résultat -->
+    <div th:if="${report}" class="alert" th:classappend="${report.errorCount > 0 ? 'alert-warning' : 'alert-success'}">
+        <h5>Import Result:</h5>
+        <p>Success: <strong th:text="${report.successCount}"></strong> | Errors: <strong th:text="${report.errorCount}"></strong></p>
+        <ul th:if="${report.errorCount > 0}">
+            <li th:each="err : ${report.errorMessages}" th:text="${err}"></li>
+        </ul>
+    </div>
+
+    <div class="row">
+        <!-- Carte Import Etudiants -->
+        <div class="col-md-6">
+            <div class="card shadow border-primary">
+                <div class="card-header bg-primary text-white">Import Students (CSV)</div>
+                <div class="card-body">
+                    <p class="small text-muted">Format: FirstName;LastName;Email;Username;CNE;ClassCode</p>
+                    <p class="small text-muted">Ex: <code>John;Doe;john@mail.com;jdoe;D123;CI1-GINF-2024</code></p>
+
+                    <form th:action="@{/import/users/students}" method="post" enctype="multipart/form-data">
+                        <!-- Choix du Fichier -->
+                        <div class="mb-3">
+                            <label class="form-label">Fichier CSV</label>
+                            <input class="form-control" type="file" name="file" accept=".csv" required>
+                        </div>
+
+                        <!-- Choix du Séparateur -->
+                        <div class="mb-3">
+                            <label class="form-label">Séparateur CSV</label>
+                            <select name="separator" class="form-select">
+                                <option value=";" selected>Point-Virgule (;) - Excel Standard</option>
+                                <option value=",">Virgule (,) - Format US</option>
+                            </select>
+                        </div>
+
+                        <button class="btn btn-primary w-100">Upload Students</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Carte Import Profs (Similaire, à implémenter si besoin) -->
+        <div class="col-md-6">
+            <div class="card shadow opacity-50">
+                <div class="card-header bg-secondary text-white">Import Teachers</div>
+                <div class="card-body text-center py-5">
+                    <em>Coming Soon</em>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

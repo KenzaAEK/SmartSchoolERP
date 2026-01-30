@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security" lang="">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- Important pour Responsive -->
+    <title>SGAI - Integrated Academic System</title>
+
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- FontAwesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link th:href="@{/css/style.css}" rel="stylesheet">
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<nav class="sidebar">
+    <div class="brand">
+        <i class="fas fa-graduation-cap me-2"></i> SGAI v2.0
+    </div>
+
+    <div class="d-flex flex-column">
+        <!-- DASHBOARD -->
+        <a class="nav-link mt-2" th:href="@{/}">
+            <i class="fas fa-tachometer-alt"></i> Dashboard
+        </a>
+
+        <!-- ================= ADMIN SECTION ================= -->
+        <div sec:authorize="hasRole('ADMIN')">
+            <div class="sidebar-heading">Structure</div>
+            <a class="nav-link" th:href="@{/admin/structure/years}">
+                <i class="fas fa-calendar"></i> Academic Years
+            </a>
+            <a class="nav-link" th:href="@{/admin/structure/programs}">
+                <i class="fas fa-layer-group"></i> Departments
+            </a>
+            <a class="nav-link" th:href="@{/admin/structure/classes}">
+                <i class="fas fa-chalkboard"></i> Classrooms
+            </a>
+
+            <div class="sidebar-heading">Academic</div>
+            <a class="nav-link" th:href="@{/admin/academic/students}">
+                <i class="fas fa-user-graduate"></i> Students
+            </a>
+            <a class="nav-link" th:href="@{/admin/academic/teachers}">
+                <i class="fas fa-chalkboard-teacher me-2"></i> Teachers
+            </a>
+            <a class="nav-link" th:href="@{/admin/academic/subjects}">
+                <i class="fas fa-book"></i> Subjects & Teachers
+            </a>
+            <a class="nav-link" th:href="@{/admin/schedule}">
+                <i class="fas fa-clock me-2"></i> Timetables
+            </a>
+            <a class="nav-link" th:href="@{/admin/deliberation}">
+                <i class="fas fa-gavel me-2"></i> Jury Deliberation
+            </a>
+            <a class="nav-link" th:href="@{/import/users}">
+                <i class="fas fa-file-import me-2"></i> Import Data
+            </a>
+            <a class="nav-link" th:href="@{/admin/reports}">
+                <i class="fas fa-print me-2"></i> Reports Center
+            </a>
+        </div>
+
+        <!-- ================= TEACHER SECTION ================= -->
+        <div sec:authorize="hasRole('TEACHER')">
+            <div class="sidebar-heading">Pédagogie</div>
+
+            <!-- Ce lien doit pointer vers /teacher/dashboard, PAS vers / -->
+            <a class="nav-link" th:href="@{/teacher/dashboard}">
+                <i class="fas fa-chalkboard-teacher"></i> Espace Cours
+            </a>
+
+            <a class="nav-link" th:href="@{/teacher/schedule}">
+                <i class="fas fa-calendar-alt"></i> Emploi du temps
+            </a>
+            <!-- Link to specific features usually accessed via dashboard, but kept here for shortcuts -->
+        </div>
+
+        <!-- ================= STUDENT SECTION ================= -->
+        <div sec:authorize="hasRole('STUDENT')">
+            <div class="sidebar-heading">Student Portal</div>
+            <a class="nav-link" th:href="@{/student/transcript}">
+                <i class="fas fa-file-invoice"></i> My Transcript
+            </a>
+            <a class="nav-link" th:href="@{/student/schedule}">
+                <i class="fas fa-calendar-alt me-2"></i> My Schedule
+            </a>
+            <a class="nav-link" th:href="@{/student/attendance}">
+                <i class="fas fa-user-clock me-2"></i> My Attendance
+            </a>
+        </div>
+
+        <div class="mt-auto p-3">
+            <form th:action="@{/logout}" method="post">
+                <button class="btn btn-outline-light w-100 btn-sm">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </button>
+            </form>
+        </div>
+    </div>
+</nav>
+
+<!-- MAIN CONTENT WRAPPER -->
+<div class="main-content">
+
+    <!-- TOP NAVBAR -->
+    <header class="top-navbar">
+        <!-- Toggle Button (Mobile Only) -->
+        <button class="btn btn-light d-md-none" id="sidebarToggle">
+            <i class="fas fa-bars"></i>
+        </button>
+
+        <!-- Academic Year Badge -->
+        <span class="badge bg-primary bg-opacity-10 text-primary border border-primary px-3 py-2 rounded-pill">
+                <i class="fas fa-university me-1"></i> Year: 2024-2025
+            </span>
+
+        <!-- User Profile -->
+        <div class="dropdown">
+            <a href="#" class="d-flex align-items-center text-decoration-none dropdown-toggle text-dark" id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
+                <div class="text-end me-2 d-none d-sm-block">
+                    <div class="fw-bold small" sec:authentication="name">User</div>
+                    <div class="text-muted" style="font-size: 0.7rem;" sec:authentication="principal.authorities">ROLE</div>
+                </div>
+                <img src="https://ui-avatars.com/api/?name=User&background=0D8ABC&color=fff" alt="" width="32" height="32" class="rounded-circle">
+            </a>
+            <ul class="dropdown-menu dropdown-menu-end shadow">
+                <li><a class="dropdown-item" href="#">Profile</a></li>
+                <li><a class="dropdown-item" href="#">Settings</a></li>
+                <li><hr class="dropdown-divider"></li>
+                <li>
+                    <form th:action="@{/logout}" method="post" class="d-inline">
+                        <button class="dropdown-item text-danger">Logout</button>
+                    </form>
+                </li>
+            </ul>
+        </div>
+    </header>
+
+    <!-- PAGE CONTENT INJECTION -->
+    <div class="content-wrapper">
+        <div layout:fragment="content">
+            <!-- Content goes here -->
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="bg-white border-top py-3 text-center text-muted small">
+        &copy; 2025 SGAI Academic System. All rights reserved.
+    </footer>
+</div>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- Custom JS for Sidebar Toggle -->
+<script>
+    document.addEventListener("DOMContentLoaded", function(){
+        const toggleBtn = document.getElementById('sidebarToggle');
+        if(toggleBtn){
+            toggleBtn.addEventListener('click', function(){
+                document.body.classList.toggle('sidebar-toggled');
+            });
+        }
+
+        // Close sidebar when clicking outside on mobile
+        document.addEventListener('click', function(event) {
+            const isClickInside = document.querySelector('.sidebar').contains(event.target) ||
+                document.getElementById('sidebarToggle').contains(event.target);
+
+            if (!isClickInside && document.body.classList.contains('sidebar-toggled')) {
+                document.body.classList.remove('sidebar-toggled');
+            }
+        });
+    });
+</script>
+</body>
+</html>

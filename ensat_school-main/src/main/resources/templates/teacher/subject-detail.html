@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<body>
+<div layout:fragment="content">
+    <div class="d-flex justify-content-between">
+        <h3>
+            <span class="text-muted" th:text="${subject.classroom.name}">Class</span> /
+            <span th:text="${subject.name}">Subject</span>
+        </h3>
+        <a th:href="@{/teacher/dashboard}" class="btn btn-secondary">Back</a>
+    </div>
+
+    <div class="row mt-4">
+        <!-- Add Exam Form -->
+        <div class="col-md-4">
+            <div class="card shadow">
+                <div class="card-header bg-success text-white">New Evaluation</div>
+                <div class="card-body">
+                    <form th:action="@{/teacher/evaluation/save}" method="post" th:object="${newEval}">
+                        <input type="hidden" name="subjectId" th:value="${subject.id}">
+                        <div class="mb-3">
+                            <label>Title</label>
+                            <input type="text" th:field="*{title}" class="form-control" placeholder="Midterm..." required>
+                        </div>
+                        <div class="mb-3">
+                            <label>Coefficient</label>
+                            <input type="number" th:field="*{coefficient}" class="form-control" value="1">
+                        </div>
+                        <div class="mb-3">
+                            <label>Max Score</label>
+                            <input type="number" th:field="*{maxScore}" class="form-control" value="20">
+                        </div>
+                        <div class="mb-3">
+                            <label>Date</label>
+                            <input type="date" th:field="*{date}" class="form-control">
+                        </div>
+                        <button class="btn btn-success w-100">Create Exam</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- List Exams -->
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-header">Evaluations History</div>
+                <table class="table table-hover mb-0">
+                    <thead><tr><th>Title</th><th>Date</th><th>Coeff</th><th>Action</th></tr></thead>
+                    <tbody>
+                    <tr th:each="e : ${evaluations}">
+                        <td th:text="${e.title}"></td>
+                        <td th:text="${e.date}"></td>
+                        <td th:text="${e.coefficient}"></td>
+                        <td>
+                            <a th:href="@{/teacher/grade/{id}(id=${e.id})}" class="btn btn-sm btn-warning">
+                                <i class="fas fa-edit"></i> Input Grades
+                            </a>
+                            <a th:href="@{/import/grades/{id}(id=${e.id})}" class="btn btn-sm btn-success">
+                                <i class="fas fa-file-upload"></i> Import CSV
+                            </a>
+                            <a th:href="@{/teacher/grades/download/{id}(id=${e.id})}" class="btn btn-sm btn-danger" title="Download PDF">
+                                <i class="fas fa-file-pdf"></i>
+                            </a>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

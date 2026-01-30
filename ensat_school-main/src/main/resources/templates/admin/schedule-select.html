@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<body>
+<div layout:fragment="content">
+  <h3>Timetable Management</h3>
+  <p>Select a class to manage its weekly schedule.</p>
+
+  <div class="row">
+    <div class="col-md-3" th:each="c : ${classrooms}">
+      <div class="card shadow-sm mb-3 text-center">
+        <div class="card-body">
+          <h5 class="card-title text-primary" th:text="${c.name}">L3 INFO</h5>
+          <a th:href="@{/admin/schedule/manage/{id}(id=${c.id})}" class="btn btn-outline-primary btn-sm stretched-link">
+            Manage Schedule
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

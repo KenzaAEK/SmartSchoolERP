@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<body>
+<div layout:fragment="content">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h3>My Academic Transcript</h3>
+        <a th:href="@{/student/certificate/download}" class="btn btn-warning text-dark ms-2">
+            <i class="fas fa-certificate"></i> Certificat Scolarité
+        </a>
+        <a th:href="@{/student/transcript/download}" class="btn btn-danger">
+            <i class="fas fa-file-pdf"></i> Download PDF
+        </a>
+    </div>
+
+    <!-- Student Info Card -->
+    <div class="card shadow mb-4">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-3 text-center">
+                    <img src="https://via.placeholder.com/100" class="rounded-circle mb-2">
+                    <h5 th:text="${transcript.student.firstName + ' ' + transcript.student.lastName}">Name</h5>
+                    <p class="text-muted" th:text="${transcript.student.studentIdNumber}">ID</p>
+                </div>
+                <div class="col-md-9">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <strong>Class:</strong> <span th:text="${transcript.className}"></span>
+                        </div>
+                        <div class="col-md-4">
+                            <strong>Academic Year:</strong> <span th:text="${transcript.academicYear}"></span>
+                        </div>
+                        <div class="col-md-4">
+                            <strong>Global Average:</strong>
+                            <span class="badge bg-primary fs-5" th:text="${transcript.globalAverage}">15.5</span>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="alert"
+                         th:classappend="${transcript.globalAverage >= 10 ? 'alert-success' : 'alert-danger'}">
+                        <strong>Final Decision:</strong> <span th:text="${transcript.finalDecision}"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Grades Table -->
+    <div class="card shadow">
+        <div class="card-header bg-dark text-white">Results Details</div>
+        <table class="table table-hover mb-0">
+            <thead class="table-light">
+            <tr>
+                <th>Subject</th>
+                <th>Teacher</th>
+                <th class="text-center">Coefficient</th>
+                <th class="text-center">Average (/20)</th>
+                <th>Appreciation</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="sub : ${transcript.subjects}">
+                <td class="fw-bold" th:text="${sub.subjectName}"></td>
+                <td th:text="${sub.teacherName}"></td>
+                <td class="text-center" th:text="${sub.coefficient}"></td>
+                <td class="text-center fw-bold">
+                        <span th:class="${sub.average >= 10 ? 'text-success' : 'text-danger'}"
+                              th:text="${sub.average}"></span>
+                </td>
+                <td>
+                    <span class="badge bg-light text-dark border" th:text="${sub.appreciation}"></span>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+</body>
+</html>

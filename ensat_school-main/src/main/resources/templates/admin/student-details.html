@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<body>
+<div layout:fragment="content">
+
+    <!-- En-tête avec Boutons d'action -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h3 class="text-dark">Student Profile</h3>
+        <div>
+            <a th:href="@{/admin/academic/students}" class="btn btn-outline-secondary">Back to List</a>
+            <a th:href="@{/admin/academic/students/edit/{id}(id=${student.id})}" class="btn btn-primary">
+                <i class="fas fa-edit"></i> Edit Profile
+            </a>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- COLONNE GAUCHE : INFO PERSO -->
+        <div class="col-md-4">
+            <div class="card shadow mb-4">
+                <div class="card-body text-center">
+                    <!-- Avatar généré avec les initiales -->
+                    <img th:src="@{'https://ui-avatars.com/api/?name=' + ${student.firstName} + '+' + ${student.lastName} + '&background=0D8ABC&color=fff&size=128'}"
+                         class="rounded-circle mb-3 shadow-sm">
+                    <h4 th:text="${student.firstName + ' ' + student.lastName}">Name</h4>
+                    <p class="text-muted mb-1" th:text="${student.studentIdNumber}">CNE</p>
+                    <span class="badge bg-success" th:text="${student.classroom.name}">Class</span>
+                </div>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item d-flex justify-content-between">
+                        <span>Username</span> <strong th:text="${student.username}"></strong>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between">
+                        <span>Email</span> <span th:text="${student.email}"></span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between">
+                        <span>Date of Birth</span> <span th:text="${student.birthDate}"></span>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Carte KPI Moyenne -->
+            <div class="card shadow bg-primary text-white">
+                <div class="card-body text-center">
+                    <h6>Current GPA</h6>
+                    <h1 class="display-4 fw-bold" th:text="${transcript.globalAverage}">15.5</h1>
+                    <span th:text="${transcript.finalDecision}">ADMITTED</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- COLONNE DROITE : ACADEMIQUE -->
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-header bg-white p-0">
+                    <ul class="nav nav-tabs card-header-tabs m-0" id="myTab" role="tablist">
+                        <li class="nav-item">
+                            <button class="nav-link active border-0 py-3 px-4" id="grades-tab" data-bs-toggle="tab" data-bs-target="#grades" type="button">
+                                <i class="fas fa-graduation-cap me-2"></i> Grades & Results
+                            </button>
+                        </li>
+                        <li class="nav-item">
+                            <button class="nav-link border-0 py-3 px-4" id="absences-tab" data-bs-toggle="tab" data-bs-target="#absences" type="button">
+                                <i class="fas fa-user-clock me-2"></i> Attendance Record
+                            </button>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="card-body">
+                    <div class="tab-content" id="myTabContent">
+
+                        <!-- ONGLET NOTES -->
+                        <div class="tab-pane fade show active" id="grades" role="tabpanel">
+                            <h5 class="mb-3">Academic Performance</h5>
+                            <table class="table table-striped table-hover">
+                                <thead class="table-light">
+                                <tr>
+                                    <th>Subject</th>
+                                    <th class="text-center">Coeff</th>
+                                    <th class="text-center">Average</th>
+                                    <th>Appreciation</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:each="sub : ${transcript.subjects}">
+                                    <td class="fw-bold" th:text="${sub.subjectName}"></td>
+                                    <td class="text-center" th:text="${sub.coefficient}"></td>
+                                    <td class="text-center">
+                                            <span class="badge"
+                                                  th:classappend="${sub.average >= 10 ? 'bg-success' : 'bg-danger'}"
+                                                  th:text="${sub.average}"></span>
+                                    </td>
+                                    <td th:text="${sub.appreciation}" class="small text-muted"></td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- ONGLET ABSENCES -->
+                        <div class="tab-pane fade" id="absences" role="tabpanel">
+                            <h5 class="mb-3">Absence History</h5>
+                            <div th:if="${absences.empty}" class="alert alert-success">
+                                <i class="fas fa-check-circle me-2"></i> Perfect attendance! No absences recorded.
+                            </div>
+                            <table th:unless="${absences.empty}" class="table table-bordered">
+                                <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Subject</th>
+                                    <th>Status</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:each="abs : ${absences}">
+                                    <td th:text="${abs.date}"></td>
+                                    <td th:text="${abs.subject.name}"></td>
+                                    <td>
+                                        <span class="badge bg-danger" th:if="${abs.status.name() == 'ABSENT'}">ABSENT</span>
+                                        <span class="badge bg-warning text-dark" th:if="${abs.status.name() == 'LATE'}">LATE</span>
+                                        <span class="badge bg-info text-dark" th:if="${abs.status.name() == 'EXCUSED'}">JUSTIFIED</span>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

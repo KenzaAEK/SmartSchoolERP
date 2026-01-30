@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<body>
+<div layout:fragment="content">
+    <h3 class="mb-4"><i class="fas fa-user-clock me-2"></i> My Attendance Record</h3>
+
+    <div class="card shadow">
+        <div class="card-body">
+            <div th:if="${history.empty}" class="alert alert-info">
+                No attendance records found yet.
+            </div>
+
+            <table th:unless="${history.empty}" class="table table-striped">
+                <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Subject</th>
+                    <th>Status</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="att : ${history}">
+                    <td th:text="${att.date}"></td>
+                    <td th:text="${att.subject.name}"></td>
+                    <td>
+                        <span th:if="${att.status.name() == 'PRESENT'}" class="badge bg-success">Present</span>
+                        <span th:if="${att.status.name() == 'ABSENT'}" class="badge bg-danger">Absent</span>
+                        <span th:if="${att.status.name() == 'LATE'}" class="badge bg-warning text-dark">Late</span>
+                        <span th:if="${att.status.name() == 'EXCUSED'}" class="badge bg-info text-dark">Excused</span>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+</body>
+</html>

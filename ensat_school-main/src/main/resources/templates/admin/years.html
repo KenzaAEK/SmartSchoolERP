@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<body>
+<div layout:fragment="content">
+    <div class="row">
+        <!-- FORM -->
+        <div class="col-md-4">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">Add Academic Year</div>
+                <div class="card-body">
+                    <form th:action="@{/admin/structure/years/save}" method="post" th:object="${newYear}">
+                        <div class="mb-3">
+                            <label>Code (ex: 2024-2025)</label>
+                            <input type="text" th:field="*{code}" class="form-control" required>
+                        </div>
+                        <div class="form-check mb-3">
+                            <input class="form-check-input" type="checkbox" th:field="*{current}" id="isCurrent">
+                            <label class="form-check-label" for="isCurrent">Set as Current Active Year</label>
+                        </div>
+                        <button class="btn btn-success w-100">Save</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <!-- LIST -->
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-header">History</div>
+                <table class="table table-hover mb-0">
+                    <thead><tr><th>ID</th><th>Code</th><th>Status</th></tr></thead>
+                    <tbody>
+                    <tr th:each="y : ${years}">
+                        <td th:text="${y.id}"></td>
+                        <td th:text="${y.code}"></td>
+                        <td>
+                            <span th:if="${y.current}" class="badge bg-success">Active</span>
+                            <span th:unless="${y.current}" class="badge bg-secondary">Archived</span>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

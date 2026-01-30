@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<body>
+<div layout:fragment="content">
+    <h3>Class Management</h3>
+
+    <div class="card shadow p-4 mb-4">
+        <h5>Create New Class</h5>
+        <form th:action="@{/admin/structure/classes/save}" method="post" class="row g-3">
+            <div class="col-md-3">
+                <label class="form-label">Academic Year</label>
+                <select name="yearId" class="form-select">
+                    <option th:each="y : ${years}" th:value="${y.id}" th:text="${y.code}" th:selected="${y.current}"></option>
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label class="form-label">Program</label>
+                <select name="programId" class="form-select">
+                    <option th:each="p : ${programs}" th:value="${p.id}" th:text="${p.name}"></option>
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label class="form-label">Level</label>
+                <select name="level" class="form-select">
+                    <option value="L1">Licence 1</option>
+                    <option value="L2">Licence 2</option>
+                    <option value="L3">Licence 3</option>
+                    <option value="M1">Master 1</option>
+                    <option value="M2">Master 2</option>
+                </select>
+            </div>
+            <div class="col-md-3 d-flex align-items-end">
+                <button class="btn btn-success w-100">Create Class</button>
+            </div>
+        </form>
+    </div>
+
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th>Class Name</th>
+            <th>Program</th>
+            <th>Year</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="c : ${classrooms}">
+            <td>
+                <span class="badge bg-info text-dark" th:text="${c.name}">L3-CS-2024</span>
+            </td>
+            <td th:text="${c.program.name}"></td>
+            <td th:text="${c.academicYear.code}"></td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>

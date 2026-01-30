@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<body>
+<div layout:fragment="content">
+    <div class="d-flex justify-content-between mb-3">
+        <h3>Departments / Programs</h3>
+        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#progModal">
+            <i class="fas fa-plus"></i> New Program
+        </button>
+    </div>
+
+    <!-- PROGRAM CARDS -->
+    <div class="row">
+        <div class="col-md-3" th:each="p : ${programs}">
+            <div class="card shadow-sm mb-3">
+                <div class="card-body text-center">
+                    <h1 class="display-6 text-primary" th:text="${p.code}">CS</h1>
+                    <h5 class="card-title" th:text="${p.name}">Computer Science</h5>
+                    <p class="text-muted small"><span th:text="${p.classrooms.size()}">0</span> Classes</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL -->
+    <div class="modal fade" id="progModal" tabindex="-1">
+        <div class="modal-dialog">
+            <form th:action="@{/admin/structure/programs/save}" method="post" th:object="${newProgram}" class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">New Program</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label>Name</label>
+                        <input type="text" th:field="*{name}" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label>Short Code (ex: INFO)</label>
+                        <input type="text" th:field="*{code}" class="form-control" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-primary">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+</html>

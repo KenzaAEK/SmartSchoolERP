@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<body>
+<div layout:fragment="content">
+    <div class="card shadow col-md-8 mx-auto">
+        <div class="card-header bg-warning text-dark">Edit Student</div>
+        <div class="card-body">
+            <form th:action="@{/admin/academic/students/update}" method="post" th:object="${student}">
+                <input type="hidden" th:field="*{id}">
+
+                <div class="mb-3">
+                    <label>Student ID (CNE)</label>
+                    <input type="text" th:field="*{studentIdNumber}" class="form-control" required>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col">
+                        <label>First Name</label>
+                        <input type="text" th:field="*{firstName}" class="form-control">
+                    </div>
+                    <div class="col">
+                        <label>Last Name</label>
+                        <input type="text" th:field="*{lastName}" class="form-control">
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label>Assigned Class</label>
+                    <select th:field="*{classroom}" class="form-select">
+                        <option th:each="c : ${classrooms}" th:value="${c.id}" th:text="${c.name}"></option>
+                    </select>
+                </div>
+
+                <button class="btn btn-warning w-100">Update Student</button>
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+</html>

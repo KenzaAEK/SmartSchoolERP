@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<body>
+<div layout:fragment="content">
+    <h3 class="mb-4"><i class="fas fa-calendar-alt me-2"></i> My Weekly Schedule</h3>
+
+    <!-- On utilise le système de grille Bootstrap pour simuler un calendrier -->
+    <div class="row row-cols-1 row-cols-md-5 g-4">
+
+        <!-- On boucle sur les jours manuellement ou via une astuce, ici on reste simple : on affiche une carte par session -->
+        <!-- Une meilleure approche visuelle : Une colonne par jour -->
+
+        <!-- MONDAY -->
+        <div class="col" th:each="day : ${T(java.time.DayOfWeek).values()}">
+            <div class="card h-100 shadow-sm">
+                <div class="card-header text-center fw-bold text-white"
+                     th:classappend="${day.name() == 'SUNDAY' ? 'bg-secondary' : 'bg-primary'}"
+                     th:text="${day}">MONDAY</div>
+                <div class="card-body p-2 bg-light">
+
+                    <!-- Filter sessions for this day -->
+                    <div th:each="s : ${sessions}" th:if="${s.dayOfWeek == day}" class="card mb-2 border-start border-4 border-primary">
+                        <div class="card-body p-2">
+                            <div class="fw-bold text-dark" th:text="${s.subject.name}">Java</div>
+                            <div class="small text-muted">
+                                <i class="far fa-clock"></i> <span th:text="${s.startTime}"></span> - <span th:text="${s.endTime}"></span>
+                            </div>
+                            <div class="small text-primary mt-1">
+                                <i class="fas fa-map-marker-alt"></i> <span th:text="${s.roomNumber}">B102</span>
+                            </div>
+                            <!-- Si c'est un étudiant qui regarde, afficher le prof. Si c'est un prof, afficher la classe -->
+                            <div class="small mt-1 text-secondary">
+                                <span th:if="${userType == 'Student'}">
+                                    <i class="fas fa-user"></i> <span th:text="${s.subject.teacher.lastName}"></span>
+                                </span>
+                                <span th:if="${userType == 'Teacher'}">
+                                    <i class="fas fa-users"></i> <span th:text="${s.subject.classroom.name}"></span>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

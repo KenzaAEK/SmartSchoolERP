@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<body>
+<div layout:fragment="content">
+    <div class="d-flex justify-content-between mb-4">
+        <h3>Deliberation Board</h3>
+        <a th:href="@{/admin/deliberation}" class="btn btn-secondary">Change Class</a>
+    </div>
+
+    <div class="card shadow">
+        <table class="table table-striped align-middle mb-0">
+            <thead class="table-dark">
+            <tr>
+                <th>Student</th>
+                <th class="text-center">Global Average</th>
+                <th class="text-center">System Suggestion</th>
+                <th class="text-center">Status</th>
+                <th>Action</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="t : ${transcripts}">
+                <!-- Nom -->
+                <td class="fw-bold" th:text="${t.student.lastName + ' ' + t.student.firstName}"></td>
+
+                <!-- Moyenne -->
+                <td class="text-center">
+                        <span class="badge fs-6"
+                              th:classappend="${t.globalAverage >= 10 ? 'bg-success' : 'bg-danger'}"
+                              th:text="${t.globalAverage}">12.5</span>
+                </td>
+
+                <!-- Suggestion Système -->
+                <td class="text-center" th:text="${t.finalDecision}">ADMITTED</td>
+
+                <!-- Statut Actuel -->
+                <td class="text-center">
+                    <span th:if="${t.student.academicStatus == null || t.student.academicStatus.name() == 'PENDING'}" class="badge bg-warning text-dark">Pending</span>
+                    <span th:if="${t.student.academicStatus != null && t.student.academicStatus.name() == 'VALIDATED'}" class="badge bg-primary">Validated</span>
+                </td>
+
+                <!-- Actions de validation -->
+                <td>
+                    <form th:action="@{/admin/deliberation/validate}" method="post" class="d-flex gap-2">
+                        <input type="hidden" name="studentId" th:value="${t.student.id}">
+                        <input type="hidden" name="classId" th:value="${classId}">
+
+                        <!-- L'admin peut surcharger la décision ici -->
+                        <select name="decision" class="form-select form-select-sm" style="width: 120px;">
+                            <option value="ADMITTED" th:selected="${t.finalDecision == 'ADMITTED'}">Admit</option>
+                            <option value="FAILED" th:selected="${t.finalDecision == 'FAILED'}">Fail</option>
+                            <option value="RETAKE">Retake Exam</option>
+                        </select>
+
+                        <button type="submit" class="btn btn-sm btn-success">
+                            <i class="fas fa-check"></i> Validate
+                        </button>
+                    </form>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+</body>
+</html>

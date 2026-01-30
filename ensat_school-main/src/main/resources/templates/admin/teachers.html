@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<body>
+<div layout:fragment="content">
+  <div class="d-flex justify-content-between mb-3">
+    <h3>Teachers Management</h3>
+    <a th:href="@{/admin/academic/teachers/new}" class="btn btn-primary">
+      <i class="fas fa-plus"></i> New Teacher
+    </a>
+  </div>
+
+  <div class="card shadow">
+    <table class="table table-hover mb-0 align-middle">
+      <thead class="table-light">
+      <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Specialty</th>
+        <th>Email</th>
+        <th>Actions</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr th:each="t : ${teachers}">
+        <td th:text="${t.employeeId}"></td>
+        <td class="fw-bold" th:text="${t.firstName + ' ' + t.lastName}"></td>
+        <td><span class="badge bg-info text-dark" th:text="${t.specialty}"></span></td>
+        <td th:text="${t.email}"></td>
+        <td>
+          <a th:href="@{/admin/academic/teachers/details/{id}(id=${t.id})}" class="btn btn-sm btn-outline-info">
+            <i class="fas fa-eye"></i>
+          </a>
+          <a th:href="@{/admin/academic/teachers/edit/{id}(id=${t.id})}" class="btn btn-sm btn-outline-warning">
+            <i class="fas fa-edit"></i>
+          </a>
+          <a th:href="@{/admin/academic/teachers/delete/{id}(id=${t.id})}" class="btn btn-sm btn-outline-danger" onclick="return confirm('Delete this teacher?')">
+            <i class="fas fa-trash"></i>
+          </a>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+</body>
+</html>

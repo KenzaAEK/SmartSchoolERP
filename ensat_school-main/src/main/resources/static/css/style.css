@@ -1,0 +1,118 @@
+:root {
+    --sidebar-width: 250px;
+    --sidebar-bg: #212529; /* Dark Bootstrap color */
+    --topbar-height: 60px;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f4f6f9;
+    overflow-x: hidden;
+}
+
+/* --- SIDEBAR --- */
+.sidebar {
+    height: 100vh;
+    width: var(--sidebar-width);
+    position: fixed;
+    top: 0;
+    left: 0;
+    background-color: var(--sidebar-bg);
+    padding-top: 0;
+    transition: all 0.3s;
+    z-index: 1000;
+}
+
+.sidebar .brand {
+    height: var(--topbar-height);
+    display: flex;
+    align-items: center;
+    padding: 0 20px;
+    background-color: rgba(0,0,0,0.2);
+    color: white;
+    font-size: 1.25rem;
+    font-weight: bold;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+.sidebar .nav-link {
+    color: rgba(255, 255, 255, 0.75);
+    padding: 10px 20px;
+    font-size: 0.95rem;
+    border-left: 3px solid transparent;
+}
+
+.sidebar .nav-link:hover, .sidebar .nav-link.active {
+    color: #fff;
+    background-color: rgba(255,255,255,0.1);
+    border-left-color: #0d6efd; /* Primary Color Accent */
+}
+
+.sidebar .nav-link i {
+    width: 25px;
+    text-align: center;
+}
+
+/* Section Titles (Admin, Pedagogy...) */
+.sidebar-heading {
+    color: rgba(255, 255, 255, 0.4);
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    font-weight: bold;
+    padding: 15px 20px 5px;
+    letter-spacing: 1px;
+}
+
+/* --- MAIN CONTENT --- */
+.main-content {
+    margin-left: var(--sidebar-width);
+    transition: all 0.3s;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* --- TOP NAVBAR --- */
+.top-navbar {
+    height: var(--topbar-height);
+    background-color: white;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+    padding: 0 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.content-wrapper {
+    padding: 25px;
+    flex-grow: 1;
+}
+
+/* --- RESPONSIVE LOGIC --- */
+@media (max-width: 768px) {
+    .sidebar {
+        margin-left: calc(var(--sidebar-width) * -1); /* Hide Sidebar */
+    }
+
+    .main-content {
+        margin-left: 0;
+    }
+
+    /* Class added by JS to show sidebar */
+    body.sidebar-toggled .sidebar {
+        margin-left: 0;
+    }
+
+    body.sidebar-toggled .main-content {
+        margin-left: 0; /* Overlay mode */
+    }
+
+    /* Overlay background when menu is open */
+    body.sidebar-toggled::before {
+        content: "";
+        position: fixed;
+        top: 0; left: 0; right: 0; bottom: 0;
+        background: rgba(0,0,0,0.5);
+        z-index: 999;
+    }
+}

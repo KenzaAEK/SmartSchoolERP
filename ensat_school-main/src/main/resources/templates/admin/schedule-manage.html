@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<body>
+<div layout:fragment="content">
+    <div class="d-flex justify-content-between mb-4">
+        <h3>Schedule for: <span class="text-primary" th:text="${classroom.name}">Class</span></h3>
+        <a th:href="@{/admin/schedule}" class="btn btn-secondary">Back</a>
+    </div>
+
+    <div class="row">
+        <!-- Formulaire d'ajout -->
+        <div class="col-md-4">
+            <div class="card shadow">
+                <div class="card-header bg-dark text-white">Add Session</div>
+                <div class="card-body">
+                    <form th:action="@{/admin/schedule/save}" method="post">
+                        <input type="hidden" name="classId" th:value="${classroom.id}">
+
+                        <div class="mb-3">
+                            <label>Subject</label>
+                            <select name="subjectId" class="form-select" required>
+                                <option th:each="s : ${subjects}" th:value="${s.id}" th:text="${s.name} + ' (' + ${s.teacher.lastName} + ')'"></option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label>Day</label>
+                            <select name="day" class="form-select">
+                                <option th:each="d : ${days}" th:value="${d}" th:text="${d}"></option>
+                            </select>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col">
+                                <label>Start</label>
+                                <input type="time" name="startTime" class="form-control" required>
+                            </div>
+                            <div class="col">
+                                <label>End</label>
+                                <input type="time" name="endTime" class="form-control" required>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label>Room</label>
+                            <input type="text" name="room" class="form-control" placeholder="e.g. B104" required>
+                        </div>
+
+                        <button class="btn btn-success w-100">Add to Schedule</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Liste visuelle -->
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-header">Weekly View</div>
+                <div class="card-body p-0">
+                    <table class="table table-bordered mb-0 text-center">
+                        <thead class="table-light">
+                        <tr>
+                            <th>Day</th>
+                            <th>Time</th>
+                            <th>Subject</th>
+                            <th>Room</th>
+                            <th>Action</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="s : ${sessions}">
+                            <td><span class="badge bg-info text-dark" th:text="${s.dayOfWeek}"></span></td>
+                            <td th:text="${s.startTime} + ' - ' + ${s.endTime}"></td>
+                            <td class="fw-bold text-start">
+                                <span th:text="${s.subject.name}"></span>
+                                <br>
+                                <small class="text-muted" th:text="${s.subject.teacher.firstName + ' ' + s.subject.teacher.lastName}"></small>
+                            </td>
+                            <td th:text="${s.roomNumber}"></td>
+                            <td>
+                                <a th:href="@{/admin/schedule/delete/{id}(id=${s.id}, classId=${classroom.id})}" class="text-danger">
+                                    <i class="fas fa-times"></i>
+                                </a>
+                            </td>
+                        </tr>
+                        <tr th:if="${sessions.empty}">
+                            <td colspan="5" class="text-muted py-4">No sessions scheduled yet.</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<body>
+<div layout:fragment="content">
+    <div class="d-flex justify-content-between mb-4">
+        <h3>Import Grades: <span class="text-primary" th:text="${evaluation.title}">Exam</span></h3>
+        <a th:href="@{/teacher/subject/{id}(id=${evaluation.subject.id})}" class="btn btn-secondary">Back</a>
+    </div>
+
+    <!-- Rapport -->
+    <div th:if="${report}" class="alert" th:classappend="${report.errorCount > 0 ? 'alert-warning' : 'alert-success'}">
+        <p>Success: <strong th:text="${report.successCount}"></strong> | Errors: <strong th:text="${report.errorCount}"></strong></p>
+        <ul th:if="${report.errorCount > 0}">
+            <li th:each="err : ${report.errorMessages}" th:text="${err}"></li>
+        </ul>
+    </div>
+
+    <div class="card shadow col-md-8 mx-auto">
+        <div class="card-body text-center p-5">
+            <i class="fas fa-file-csv fa-4x text-success mb-3"></i>
+            <h5>Upload CSV File</h5>
+            <p class="text-muted">
+                Format: <code>Student_ID;Score</code> (e.g., <code>D1345;15.5</code>)<br>
+                Separator: Semicolon (;)
+            </p>
+
+            <form th:action="@{/import/grades/save}" method="post" enctype="multipart/form-data">
+                <input type="hidden" name="evalId" th:value="${evaluation.id}">
+
+                <div class="row mb-4 text-start">
+                    <div class="col-md-8">
+                        <label class="form-label">Select File</label>
+                        <input class="form-control" type="file" name="file" accept=".csv" required>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label class="form-label">Separator</label>
+                        <select name="separator" class="form-select">
+                            <option value=";" selected>Semicolon (;)</option>
+                            <option value=",">Comma (,)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <button class="btn btn-success px-5">Process Import</button>
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+</html>
