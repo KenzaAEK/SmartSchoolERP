@@ -1,0 +1,94 @@
+version: '3.8'
+
+services:
+  # Base de données PostgreSQL
+  postgres:
+    image: postgres:15-alpine
+    container_name: sgai-postgres
+    environment:
+      POSTGRES_DB: sgai_db
+      POSTGRES_USER: sgai_user
+      POSTGRES_PASSWORD: sgai_password
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks:
+      - sgai-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U sgai_user -d sgai_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Service Spring Boot
+  sgai-backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: sgai-backend
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/sgai_db
+      - SPRING_DATASOURCE_USERNAME=sgai_user
+      - SPRING_DATASOURCE_PASSWORD=sgai_password
+      - AI_RECOMMENDATION_URL=http://ai-recommendation:5000
+      - AI_SCHEDULE_URL=http://ai-schedule:5001
+    ports:
+      - "8080:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      ai-recommendation:
+        condition: service_started
+      ai-schedule:
+        condition: service_started
+    networks:
+      - sgai-network
+    restart: unless-stopped
+
+  # Service IA - Recommandation
+  ai-recommendation:
+    build:
+      context: ./ai-services/recommendation
+      dockerfile: Dockerfile
+    container_name: sgai-ai-recommendation
+    environment:
+      - SPRING_BOOT_URL=http://sgai-backend:8080
+      - K_NEIGHBORS=10
+      - FLASK_DEBUG=false
+    volumes:
+      - ./ai-services/recommendation/models:/app/models
+      - ./ai-services/recommendation/data:/app/data
+      - ./ai-services/recommendation/logs:/app/logs
+    ports:
+      - "5000:5000"
+    networks:
+      - sgai-network
+    restart: unless-stopped
+
+  # Service IA - Optimisation EDT
+  ai-schedule:
+    build:
+      context: ./ai-services/schedule-optimizer
+      dockerfile: Dockerfile
+    container_name: sgai-ai-schedule
+    environment:
+      - SPRING_BOOT_URL=http://sgai-backend:8080
+      - POPULATION_SIZE=100
+      - MAX_GENERATIONS=200
+      - FLASK_DEBUG=false
+    volumes:
+      - ./ai-services/schedule-optimizer/models:/app/models
+      - ./ai-services/schedule-optimizer/logs:/app/logs
+    ports:
+      - "5001:5001"
+    networks:
+      - sgai-network
+    restart: unless-stopped
+
+volumes:
+  postgres-data:
+
+networks:
+  sgai-network:
+    driver: bridge
